@@ -50,6 +50,24 @@ The application should be accessible at:
 * Vote application: [http://localhost:8080](http://localhost:8080)
 * Results application: [http://localhost:8081](http://localhost:8081)
 
+## Submission Requirements
+
+For this project, you need to submit the following:
+
+1. Your completed `docker-compose.yml` file
+2. Screenshots showing:
+   - The running containers (`docker ps` output)
+   - The vote application working in a browser
+   - The results application working in a browser
+
+3. A `reflections.md` file that includes:
+   - Challenges you faced while building the Docker Compose file
+   - How you determined the proper configuration for each service
+   - Explanations of your choices for networking, volumes, and dependencies
+   - What you learned about containerized applications and Docker Compose
+   - How you might improve this application architecture
+
+
 ## Tips
 
 * Examine each service's Dockerfile to understand its requirements
