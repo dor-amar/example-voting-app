@@ -1,65 +1,61 @@
-# Example Voting App
+# Example Voting App - Student Project
 
-A simple distributed application running across multiple Docker containers.
+This is a simple distributed application running across multiple Docker containers. Your task will be to build the Docker Compose file to make the application work.
 
-## Getting started
+## Application Overview
 
-Download [Docker Desktop](https://www.docker.com/products/docker-desktop) for Mac or Windows. [Docker Compose](https://docs.docker.com/compose) will be automatically installed. On Linux, make sure you have the latest version of [Compose](https://docs.docker.com/compose/install/).
+This application provides a voting system where users can vote between two options, with results displayed in real-time:
 
-This solution uses Python, Node.js, .NET, with Redis for messaging and Postgres for storage.
+![Architecture diagram](architecture.excalidraw.png)
 
-Run in this directory to build and run the app:
+The application consists of:
+* A front-end web app in [Python](/vote) that lets you vote between two options
+* A [Redis](https://hub.docker.com/_/redis/) queue which collects new votes
+* A [.NET](/worker/) worker which consumes votes and stores them in the database
+* A [Postgres](https://hub.docker.com/_/postgres/) database backed by a Docker volume
+* A [Node.js](/result) web app which shows the results of the voting in real time
+
+## Prerequisites
+
+* Install [Docker Desktop](https://www.docker.com/products/docker-desktop) for Mac or Windows
+* On Linux, make sure you have the latest version of [Docker and Docker Compose](https://docs.docker.com/compose/install/)
+
+## Your Task
+
+Your task is to build a working `docker-compose.yml` file that:
+
+1. Sets up all five services (vote, redis, worker, db, result)
+2. Configures the necessary networks
+3. Sets up proper volume mapping for persistent data
+4. Ensures services start in the correct order (using dependencies)
+5. Exposes the necessary ports for the web interfaces
+
+### Service Requirements
+
+* **vote**: Python web app that needs to be accessible on port 8080
+* **redis**: Queue service that the vote app writes to and the worker reads from
+* **worker**: .NET service that processes votes from Redis and stores in Postgres
+* **db**: Postgres database that stores vote data
+* **result**: Node.js web app that displays results and needs to be accessible on port 8081
+
+## Checking Your Work
+
+Once you have created your docker-compose.yml file, run:
 
 ```shell
 docker compose up
 ```
 
-The `vote` app will be running at [http://localhost:8080](http://localhost:8080), and the `results` will be at [http://localhost:8081](http://localhost:8081).
+The application should be accessible at:
+* Vote application: [http://localhost:8080](http://localhost:8080)
+* Results application: [http://localhost:8081](http://localhost:8081)
 
-Alternately, if you want to run it on a [Docker Swarm](https://docs.docker.com/engine/swarm/), first make sure you have a swarm. If you don't, run:
+## Tips
 
-```shell
-docker swarm init
-```
+* Examine each service's Dockerfile to understand its requirements
+* Consider how services depend on each other
+* Think about which services need to communicate with each other and set up networks accordingly
+* Remember to set up health checks for critical services
+* The voting application only accepts one vote per client browser
 
-Once you have your swarm, in this directory run:
-
-```shell
-docker stack deploy --compose-file docker-stack.yml vote
-```
-
-## Run the app in Kubernetes
-
-The folder k8s-specifications contains the YAML specifications of the Voting App's services.
-
-Run the following command to create the deployments and services. Note it will create these resources in your current namespace (`default` if you haven't changed it.)
-
-```shell
-kubectl create -f k8s-specifications/
-```
-
-The `vote` web app is then available on port 31000 on each host of the cluster, the `result` web app is available on port 31001.
-
-To remove them, run:
-
-```shell
-kubectl delete -f k8s-specifications/
-```
-
-## Architecture
-
-![Architecture diagram](architecture.excalidraw.png)
-
-* A front-end web app in [Python](/vote) which lets you vote between two options
-* A [Redis](https://hub.docker.com/_/redis/) which collects new votes
-* A [.NET](/worker/) worker which consumes votes and stores them in…
-* A [Postgres](https://hub.docker.com/_/postgres/) database backed by a Docker volume
-* A [Node.js](/result) web app which shows the results of the voting in real time
-
-## Notes
-
-The voting application only accepts one vote per client browser. It does not register additional votes if a vote has already been submitted from a client.
-
-This isn't an example of a properly architected perfectly designed distributed app... it's just a simple
-example of the various types of pieces and languages you might see (queues, persistent data, etc), and how to
-deal with them in Docker at a basic level.
+Good luck!
